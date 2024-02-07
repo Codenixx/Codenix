@@ -5,20 +5,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Entorno 3D y Tienda de Ropa</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-  <script src="/socket.io/socket.io.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.3.2/socket.io.js"></script>
   <style>
-
     body {
-    margin: 0;
-    padding: 0;
-    display: flex;
+      margin: 0;
+      padding: 0;
+      display: flex;
       align-items: center;
       justify-content: center;
       flex-direction: column;
     }
     #totaltienda {
-        z-index: 2;
-        position: absolute;
+      z-index: 2;
+      position: absolute;
       font-family: 'Press Start 2P', system-ui;
       margin: 0;
       padding: 0;
@@ -28,12 +27,10 @@
       flex-direction: column;
       background-color: #f4f4f4;
     }
-
     #titulo1 {
       border: 1px solid;
       font-size: 30px;
     }
-
     #store {
       text-align: center;
       border: 1px solid;
@@ -42,7 +39,6 @@
       justify-content: center;
       flex-wrap: wrap;
     }
-
     .product {
       margin: 20px;
       padding: 20px;
@@ -51,7 +47,6 @@
       background-color: #fff;
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     }
-
     button { 
       cursor: pointer; 
     }
@@ -67,21 +62,18 @@
         <p>Precio: $29.99</p>
         <button>Agregar al Carrito</button>
       </div>
-
       <div class="product">
         <h2>Pantalones Vaqueros</h2>
         <img src="pantalones.jpg" alt="Pantalones Vaqueros">
         <p>Precio: $39.99</p>
         <button>Agregar al Carrito</button>
       </div>
-
       <div class="product">
         <h2>Vestido de Noche</h2>
         <img src="vestido.jpg" alt="Vestido de Noche">
         <p>Precio: $49.99</p>
         <button>Agregar al Carrito</button>
       </div>
-
       <div class="product">
         <h2>Zapatos de Moda</h2>
         <img src="zapatos.jpg" alt="Zapatos de Moda">
@@ -135,18 +127,26 @@
     scene2D.add(wall4);
     scene3D.add(wall4.clone());
 
-    // Personaje
-    const geometry = new THREE.BoxGeometry();
-    const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-    const player = new THREE.Mesh(geometry, material);
-    scene2D.add(player);
-    scene3D.add(player.clone());
+    // Colores de los jugadores
+    const playerColors = [0xff0000, 0x00ff00, 0x0000ff, 0xffff00];
+
+    // Personajes
+    const players = [];
+    const numPlayers = playerColors.length;
+    for (let i = 0; i < numPlayers; i++) {
+      const geometry = new THREE.BoxGeometry();
+      const material = new THREE.MeshBasicMaterial({ color: playerColors[i] });
+      const player = new THREE.Mesh(geometry, material);
+      players.push(player);
+      scene2D.add(player);
+      scene3D.add(player.clone());
+    }
 
     // Cámara
     const cameraHeight = 1.6;
     const cameraOffsetZ = -0.5;
     camera.position.set(0, cameraHeight, 0);
-    player.add(camera);
+    players.forEach(player => player.add(camera));
 
     const moveSpeed = 0.1;
     const rotateSpeed = 0.001;
@@ -158,7 +158,7 @@
     const onMouseMove = (event) => {
     if(isMouseMovementEnabled){
       const { movementX, movementY } = event;
-      player.rotation.y -= movementX * rotateSpeed;
+      players[0].rotation.y -= movementX * rotateSpeed;
       camera.rotation.x -= movementY * rotateSpeed;
       camera.rotation.x = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, camera.rotation.x));
 
@@ -189,24 +189,24 @@
       requestAnimationFrame(animate);
 
       if (document.pointerLockElement === renderer.domElement) {
-        if (keyState['KeyW']) player.translateZ(-moveSpeed);
-        if (keyState['KeyS']) player.translateZ(moveSpeed);
-        if (keyState['KeyA']) player.translateX(-moveSpeed);
-        if (keyState['KeyD']) player.translateX(moveSpeed);
+        if (keyState['KeyW']) players[0].translateZ(-moveSpeed);
+        if (keyState['KeyS']) players[0].translateZ(moveSpeed);
+        if (keyState['KeyA']) players[0].translateX(-moveSpeed);
+        if (keyState['KeyD']) players[0].translateX(moveSpeed);
 
         if (activeScene === scene3D) {
           const forward = new THREE.Vector3();
-          player.getWorldDirection(forward);
+          players[0].getWorldDirection(forward);
           forward.y = 0;
           forward.normalize();
-          if (keyState['ArrowUp']) player.position.add(forward.multiplyScalar(moveSpeed));
-          if (keyState['ArrowDown']) player.position.add(forward.multiplyScalar(-moveSpeed));
+          if (keyState['ArrowUp']) players[0].position.add(forward.multiplyScalar(moveSpeed));
+          if (keyState['ArrowDown']) players[0].position.add(forward.multiplyScalar(-moveSpeed));
           const right = new THREE.Vector3();
           right.setFromMatrixColumn(camera.matrix, 0);
           right.y = 0;
           right.normalize();
-          if (keyState['ArrowRight']) player.position.add(right.multiplyScalar(moveSpeed));
-          if (keyState['ArrowLeft']) player.position.add(right.multiplyScalar(-moveSpeed));
+          if (keyState['ArrowRight']) players[0].position.add(right.multiplyScalar(moveSpeed));
+          if (keyState['ArrowLeft']) players[0].position.add(right.multiplyScalar(-moveSpeed));
         }
       }
 
@@ -261,19 +261,18 @@
      // Inicializar Socket.IO
     const socket = io();
 
-// Escuchar el movimiento del otro jugador desde el servidor
-socket.on('move', (data) => {
-  // Actualizar la posición del otro jugador en la escena 3D
-  // Implementa tu lógica aquí
-});
+    // Escuchar el movimiento del otro jugador desde el servidor
+    socket.on('move', (data) => {
+      // Actualizar la posición del otro jugador en la escena 3D
+      // Implementa tu lógica aquí
+    });
 
-// Capturar eventos de teclado para mover tu propio jugador y enviar el movimiento al servidor
-document.addEventListener('keydown', (event) => {
-  // Implementa tu lógica para mover tu propio jugador
-  // Envía el movimiento al servidor
-  socket.emit('move', { key: event.code });
-});
-
+    // Capturar eventos de teclado para mover tu propio jugador y enviar el movimiento al servidor
+    document.addEventListener('keydown', (event) => {
+      // Implementa tu lógica para mover tu propio jugador
+      // Envía el movimiento al servidor
+      socket.emit('move', { key: event.code });
+    });
   </script>
 </body>
 </html>
