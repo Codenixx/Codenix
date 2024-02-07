@@ -13,13 +13,21 @@
       align-items: center;
       justify-content: center;
       flex-direction: column;
+      overflow: auto; /* Permitir el desplazamiento vertical */
+    }
+    #fondo3D {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: -1;
     }
     #totaltienda {
-        z-index: 2;
-        position: absolute;
+      z-index: 2;
+      position: relative; /* Cambiado a relativo para que la posición sea relativa al body */
       font-family: 'Press Start 2P', system-ui;
-      margin: 0;
+      margin: 5% auto; /* Alineado verticalmente y centrado horizontalmente */
       padding: 0;
+      width: 60%;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -30,15 +38,15 @@
     #titulo1 {
       border: 1px solid;
       font-size: 30px;
+      margin-bottom: 20px; /* Espacio inferior agregado para separar el título de los productos */
     }
 
     #store {
       text-align: center;
       border: 1px solid;
       display: flex;
-      align-items: center;
-      justify-content: center;
       flex-wrap: wrap;
+      justify-content: center; /* Centrar los elementos en el eje principal */
     }
 
     .product {
@@ -56,6 +64,7 @@
   </style>
 </head>
 <body>
+  <div id="fondo3D"></div>
   <div id="totaltienda">
     <p id="titulo1">Tienda ropa</p>
     <div id="store">
@@ -85,6 +94,66 @@
         <img src="zapatos.jpg" alt="Zapatos de Moda">
         <p>Precio: $59.99</p>
         <button>Agregar al Carrito</button>
+      </div><div class="product">
+        <h2>Zapatos de Moda</h2>
+        <img src="zapatos.jpg" alt="Zapatos de Moda">
+        <p>Precio: $59.99</p>
+        <button>Agregar al Carrito</button>
+      </div><div class="product">
+        <h2>Zapatos de Moda</h2>
+        <img src="zapatos.jpg" alt="Zapatos de Moda">
+        <p>Precio: $59.99</p>
+        <button>Agregar al Carrito</button>
+      </div><div class="product">
+        <h2>Zapatos de Moda</h2>
+        <img src="zapatos.jpg" alt="Zapatos de Moda">
+        <p>Precio: $59.99</p>
+        <button>Agregar al Carrito</button>
+      </div><div class="product">
+        <h2>Zapatos de Moda</h2>
+        <img src="zapatos.jpg" alt="Zapatos de Moda">
+        <p>Precio: $59.99</p>
+        <button>Agregar al Carrito</button>
+      </div><div class="product">
+        <h2>Zapatos de Moda</h2>
+        <img src="zapatos.jpg" alt="Zapatos de Moda">
+        <p>Precio: $59.99</p>
+        <button>Agregar al Carrito</button>
+      </div><div class="product">
+        <h2>Zapatos de Moda</h2>
+        <img src="zapatos.jpg" alt="Zapatos de Moda">
+        <p>Precio: $59.99</p>
+        <button>Agregar al Carrito</button>
+      </div><div class="product">
+        <h2>Zapatos de Moda</h2>
+        <img src="zapatos.jpg" alt="Zapatos de Moda">
+        <p>Precio: $59.99</p>
+        <button>Agregar al Carrito</button>
+      </div><div class="product">
+        <h2>Zapatos de Moda</h2>
+        <img src="zapatos.jpg" alt="Zapatos de Moda">
+        <p>Precio: $59.99</p>
+        <button>Agregar al Carrito</button>
+      </div><div class="product">
+        <h2>Zapatos de Moda</h2>
+        <img src="zapatos.jpg" alt="Zapatos de Moda">
+        <p>Precio: $59.99</p>
+        <button>Agregar al Carrito</button>
+      </div><div class="product">
+        <h2>Zapatos de Moda</h2>
+        <img src="zapatos.jpg" alt="Zapatos de Moda">
+        <p>Precio: $59.99</p>
+        <button>Agregar al Carrito</button>
+      </div><div class="product">
+        <h2>Zapatos de Moda</h2>
+        <img src="zapatos.jpg" alt="Zapatos de Moda">
+        <p>Precio: $59.99</p>
+        <button>Agregar al Carrito</button>
+      </div><div class="product">
+        <h2>Zapatos de Moda</h2>
+        <img src="zapatos.jpg" alt="Zapatos de Moda">
+        <p>Precio: $59.99</p>
+        <button>Agregar al Carrito</button>
       </div>
     </div>
   </div>
@@ -97,7 +166,7 @@
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     const renderer = new THREE.WebGLRenderer();
     renderer.setSize(window.innerWidth, window.innerHeight);
-    document.body.appendChild(renderer.domElement);
+    document.getElementById('fondo3D').appendChild(renderer.domElement);
 
     // Suelo
     const groundGeometry = new THREE.PlaneGeometry(100, 100);
