@@ -2,49 +2,32 @@ const express = require('express');
 const http = require('http');
 const socketIo = require('socket.io');
 
+const PORT = process.env.PORT || 3000;
+
 const app = express();
 const server = http.createServer(app);
 const io = socketIo(server);
 
-// Servir el cliente HTML y los archivos estáticos
-app.get('/', (req, res) => {
-  res.sendFile(__dirname + '/index.html');
-});
+// Servir archivos estáticos desde la carpeta public
+app.use(express.static('public'));
 
-app.use(express.static(__dirname));
-
-// Almacenar la posición de los jugadores
-const players = {};
-
-// Escuchar la conexión de los clientes
+// Manejar conexiones de Socket.IO
 io.on('connection', (socket) => {
-  console.log('A user connected');
+  console.log('Usuario conectado:', socket.id);
 
-  // Escuchar el movimiento del jugador
+  // Escuchar eventos de movimiento del cliente
   socket.on('move', (data) => {
-    // Actualizar la posición del jugador en el servidor
-    const playerId = socket.id;
-    if (!players[playerId]) {
-      players[playerId] = { x: 0, y: 0, z: 0, color: Math.random() * 0xffffff };
-    }
-    players[playerId].x += data.x;
-    players[playerId].y += data.y;
-    players[playerId].z += data.z;
-
-    // Emitir la información de los jugadores a todos los clientes
-    io.emit('update', players);
+    // Emitir el evento de movimiento a todos los clientes excepto al que lo envió
+    socket.broadcast.emit('move', data);
   });
 
-  // Manejar la desconexión de los clientes
+  // Manejar desconexiones de clientes
   socket.on('disconnect', () => {
-    console.log('A user disconnected');
-    delete players[socket.id];
-    io.emit('update', players);
+    console.log('Usuario desconectado:', socket.id);
   });
 });
 
-// Iniciar el servidor en el puerto 3000
-const PORT = process.env.PORT || 3000;
+// Iniciar el servidor
 server.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+  console.log(`Servidor en funcionamiento en http://localhost:${PORT}`);
 });
