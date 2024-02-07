@@ -1,26 +1,28 @@
-const WebSocket = require('ws');
+const express = require('express');
+const http = require('http');
+const socketIo = require('socket.io');
 
-const wss = new WebSocket.Server({ port: 3000 });
+const app = express();
+const server = http.createServer(app);
+const io = socketIo(server);
 
-let clients = [];
+const PORT = process.env.PORT || 3000;
 
-wss.on('connection', function connection(ws) {
-    // Añadir cliente a la lista de clientes
-    clients.push(ws);
+io.on('connection', (socket) => {
+  console.log('Nuevo cliente conectado');
 
-    // Manejar mensajes del cliente
-    ws.on('message', function incoming(message) {
-        // Enviar mensaje a todos los clientes excepto al que lo envió
-        clients.forEach(client => {
-            if (client !== ws && client.readyState === WebSocket.OPEN) {
-                client.send(message);
-            }
-        });
-    });
+  socket.on('move', (data) => {
+    console.log('Movimiento recibido:', data);
+    // Aquí puedes implementar la lógica para manejar el movimiento del jugador
+    // y emitir el movimiento a todos los clientes excepto al remitente
+    socket.broadcast.emit('move', data);
+  });
 
-    // Manejar cierre de conexión
-    ws.on('close', function close() {
-        // Remover cliente de la lista de clientes
-        clients = clients.filter(client => client !== ws);
-    });
+  socket.on('disconnect', () => {
+    console.log('Cliente desconectado');
+  });
+});
+
+server.listen(PORT, () => {
+  console.log(`Servidor escuchando en el puerto ${PORT}`);
 });
