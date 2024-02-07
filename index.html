@@ -13,7 +13,7 @@
       align-items: center;
       justify-content: center;
       flex-direction: column;
-      overflow: auto; /* Permitir el desplazamiento vertical */
+      overflow: auto;
     }
     #fondo3D {
       position: fixed;
@@ -94,75 +94,12 @@
         <img src="zapatos.jpg" alt="Zapatos de Moda">
         <p>Precio: $59.99</p>
         <button>Agregar al Carrito</button>
-      </div><div class="product">
-        <h2>Zapatos de Moda</h2>
-        <img src="zapatos.jpg" alt="Zapatos de Moda">
-        <p>Precio: $59.99</p>
-        <button>Agregar al Carrito</button>
-      </div><div class="product">
-        <h2>Zapatos de Moda</h2>
-        <img src="zapatos.jpg" alt="Zapatos de Moda">
-        <p>Precio: $59.99</p>
-        <button>Agregar al Carrito</button>
-      </div><div class="product">
-        <h2>Zapatos de Moda</h2>
-        <img src="zapatos.jpg" alt="Zapatos de Moda">
-        <p>Precio: $59.99</p>
-        <button>Agregar al Carrito</button>
-      </div><div class="product">
-        <h2>Zapatos de Moda</h2>
-        <img src="zapatos.jpg" alt="Zapatos de Moda">
-        <p>Precio: $59.99</p>
-        <button>Agregar al Carrito</button>
-      </div><div class="product">
-        <h2>Zapatos de Moda</h2>
-        <img src="zapatos.jpg" alt="Zapatos de Moda">
-        <p>Precio: $59.99</p>
-        <button>Agregar al Carrito</button>
-      </div><div class="product">
-        <h2>Zapatos de Moda</h2>
-        <img src="zapatos.jpg" alt="Zapatos de Moda">
-        <p>Precio: $59.99</p>
-        <button>Agregar al Carrito</button>
-      </div><div class="product">
-        <h2>Zapatos de Moda</h2>
-        <img src="zapatos.jpg" alt="Zapatos de Moda">
-        <p>Precio: $59.99</p>
-        <button>Agregar al Carrito</button>
-      </div><div class="product">
-        <h2>Zapatos de Moda</h2>
-        <img src="zapatos.jpg" alt="Zapatos de Moda">
-        <p>Precio: $59.99</p>
-        <button>Agregar al Carrito</button>
-      </div><div class="product">
-        <h2>Zapatos de Moda</h2>
-        <img src="zapatos.jpg" alt="Zapatos de Moda">
-        <p>Precio: $59.99</p>
-        <button>Agregar al Carrito</button>
-      </div><div class="product">
-        <h2>Zapatos de Moda</h2>
-        <img src="zapatos.jpg" alt="Zapatos de Moda">
-        <p>Precio: $59.99</p>
-        <button>Agregar al Carrito</button>
-      </div><div class="product">
-        <h2>Zapatos de Moda</h2>
-        <img src="zapatos.jpg" alt="Zapatos de Moda">
-        <p>Precio: $59.99</p>
-        <button>Agregar al Carrito</button>
-      </div><div class="product">
-        <h2>Zapatos de Moda</h2>
-        <img src="zapatos.jpg" alt="Zapatos de Moda">
-        <p>Precio: $59.99</p>
-        <button>Agregar al Carrito</button>
       </div>
     </div>
   </div>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script>
-    const scene2D = new THREE.Scene();
-    const scene3D = new THREE.Scene();
-    let activeScene = scene2D;
-
+    const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     const renderer = new THREE.WebGLRenderer();
     renderer.setSize(window.innerWidth, window.innerHeight);
@@ -173,8 +110,7 @@
     const groundMaterial = new THREE.MeshBasicMaterial({ color: 0xaaaaaa, side: THREE.DoubleSide });
     const ground = new THREE.Mesh(groundGeometry, groundMaterial);
     ground.rotation.x = Math.PI / 2;
-    scene2D.add(ground);
-    scene3D.add(ground.clone());
+    scene.add(ground);
 
     // Paredes
     const wallGeometry = new THREE.BoxGeometry(10, 5, 0.2);
@@ -182,32 +118,27 @@
 
     const wall1 = new THREE.Mesh(wallGeometry, wallMaterial);
     wall1.position.set(0, 2.5, -5);
-    scene2D.add(wall1);
-    scene3D.add(wall1.clone());
+    scene.add(wall1);
 
     const wall2 = new THREE.Mesh(wallGeometry, wallMaterial);
     wall2.position.set(0, 2.5, 5);
-    scene2D.add(wall2);
-    scene3D.add(wall2.clone());
+    scene.add(wall2);
 
     const wall3 = new THREE.Mesh(wallGeometry, wallMaterial);
     wall3.rotation.y = Math.PI / 2;
     wall3.position.set(5, 2.5, 0);
-    scene2D.add(wall3);
-    scene3D.add(wall3.clone());
+    scene.add(wall3);
 
     const wall4 = new THREE.Mesh(wallGeometry, wallMaterial);
     wall4.rotation.y = Math.PI / 2;
     wall4.position.set(-5, 2.5, 0);
-    scene2D.add(wall4);
-    scene3D.add(wall4.clone());
+    scene.add(wall4);
 
     // Personaje
     const geometry = new THREE.BoxGeometry();
     const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
     const player = new THREE.Mesh(geometry, material);
-    scene2D.add(player);
-    scene3D.add(player.clone());
+    scene.add(player);
 
     // Cámara
     const cameraHeight = 1.6;
@@ -223,16 +154,12 @@
     const center = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
 
     const onMouseMove = (event) => {
-    if(isMouseMovementEnabled){
-      const { movementX, movementY } = event;
-      player.rotation.y -= movementX * rotateSpeed;
-      camera.rotation.x -= movementY * rotateSpeed;
-      camera.rotation.x = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, camera.rotation.x));
-
-      if (document.pointerLockElement === renderer.domElement) {
-        window.dispatchEvent(new Event('mousemove'));
+      if(isMouseMovementEnabled){
+        const { movementX, movementY } = event;
+        player.rotation.y -= movementX * rotateSpeed;
+        camera.rotation.x -= movementY * rotateSpeed;
+        camera.rotation.x = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, camera.rotation.x));
       }
-    }
     };
 
     document.addEventListener('keydown', (event) => {
@@ -260,54 +187,50 @@
         if (keyState['KeyS']) player.translateZ(moveSpeed);
         if (keyState['KeyA']) player.translateX(-moveSpeed);
         if (keyState['KeyD']) player.translateX(moveSpeed);
-
-        if (activeScene === scene3D) {
-          const forward = new THREE.Vector3();
-          player.getWorldDirection(forward);
-          forward.y = 0;
-          forward.normalize();
-          if (keyState['ArrowUp']) player.position.add(forward.multiplyScalar(moveSpeed));
-          if (keyState['ArrowDown']) player.position.add(forward.multiplyScalar(-moveSpeed));
-          const right = new THREE.Vector3();
-          right.setFromMatrixColumn(camera.matrix, 0);
-          right.y = 0;
-          right.normalize();
-          if (keyState['ArrowRight']) player.position.add(right.multiplyScalar(moveSpeed));
-          if (keyState['ArrowLeft']) player.position.add(right.multiplyScalar(-moveSpeed));
-        }
       }
-
-      renderer.render(activeScene, camera);
+      
+      renderer.render(scene, camera);
     };
 
     animate();
 
     // Entrar en el modo de bloqueo del cursor al hacer clic en el botón
     const modeToggle = document.createElement('button');
-    modeToggle.textContent = 'Modo 3D';
+    modeToggle.textContent = 'Modo Navegación';
     modeToggle.style.position = 'absolute';
     modeToggle.style.top = '10px';
     modeToggle.style.left = '10px';
-    activeScene = scene3D;
+    modeToggle.style.position = 'fixed';
     modeToggle.addEventListener('click', toggleMode);
     document.body.appendChild(modeToggle);
     
+    const balls = [];
+    const ballCount = 50;
+
+    for (let i = 0; i < ballCount; i++) {
+      const radius = Math.random() * 3;
+      const geometry = new THREE.SphereGeometry(radius, 32, 32);
+      const material = new THREE.MeshBasicMaterial({ color: Math.random() * 0xffffff });
+      const ball = new THREE.Mesh(geometry, material);
+
+      ball.position.x = (Math.random() - 0.5) * 200;
+      ball.position.y = (Math.random() - 0.5) * 200;
+      ball.position.z = (Math.random() - 0.5) * 200;
+
+      balls.push(ball);
+      scene.add(ball);
+    }
 
     function toggleMode() {
-      if (activeScene === scene2D) {
-        activeScene = scene3D;
-        modeToggle.textContent = 'Modo 3D';
+      if (document.pointerLockElement === renderer.domElement) {
         document.exitPointerLock();
         document.body.style.cursor = 'auto';
-        document.getElementById('totaltienda').style.display = 'flex';
+        document.getElementById('totaltienda').style.visibility = 'visible';
         isMouseMovementEnabled = false;
-      } else if(activeScene=== scene3D){
-        
-        activeScene = scene2D;
-        modeToggle.textContent = 'Modo 2D';
+      } else {
         renderer.domElement.requestPointerLock();
         document.body.style.cursor = 'none';
-        document.getElementById('totaltienda').style.display = 'none';
+        document.getElementById('totaltienda').style.visibility = 'hidden';
         isMouseMovementEnabled = true;
       }
     }
@@ -317,11 +240,6 @@
       if (document.fullscreenElement) {
         renderer.domElement.requestPointerLock();
       }
-    });
-    // Script adicional para ocultar la tienda de ropa al entrar en modo 3D
-    document.addEventListener('DOMContentLoaded', () => {
-        const store = document.getElementById('totaltienda');
-        store.style.display = 'flex';
     });
   </script>
 </body>
