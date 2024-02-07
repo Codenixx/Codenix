@@ -1,14 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Multiplayer 3D Game</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Web Multijugador 3D</title>
+  <!-- Incluir Three.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <!-- Incluir Socket.IO -->
+  <script src="/socket.io/socket.io.js"></script>
 </head>
 <body>
-    <div id="container"></div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="script.js"></script>
+  <script>
+    // Código JavaScript para interactuar con el servidor usando Socket.IO
+    const socket = io();
+
+    // Escuchar el movimiento del otro jugador desde el servidor
+    socket.on('move', (data) => {
+      // Actualizar la posición del otro jugador en la escena 3D
+      // Implementa tu lógica aquí
+    });
+
+    // Capturar eventos de teclado para mover tu propio jugador
+    document.addEventListener('keydown', (event) => {
+      // Implementa tu lógica para mover tu propio jugador y enviar el movimiento al servidor
+    });
+  </script>
 </body>
 </html>
