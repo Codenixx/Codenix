@@ -54,6 +54,7 @@ scene.add(wall4);
 const geometry = new THREE.BoxGeometry();
 const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
 const player = new THREE.Mesh(geometry, material);
+player.position.set(0,0,0)
 scene.add(player);
 
     // Cámara
@@ -126,15 +127,15 @@ const models = [];
 loader.load('question.gltf', function (gltf) {
     const model = gltf.scene;
 
-    const numInstances = 50;
+    const numInstances = 100;
 
     // Crear múltiples instancias del modelo
     for (let i = 0; i < numInstances; i++) {
         const clonedModel = model.clone();
         const scale = Math.random() * 0.003 + 0.06;
-        const initialX = (Math.random() * 10) - 5;
-        const initialY = Math.random() * 10;
-        const initialZ = (Math.random() * 10) - 5;
+        const initialX = (Math.random() * 20) - 10;
+        const initialY = (Math.random() * 20) - 10;
+        const initialZ = ((Math.random() * -5)-2) ;
 
         clonedModel.position.set(initialX, initialY, initialZ);
         clonedModel.scale.set(scale, scale, scale);
@@ -176,9 +177,9 @@ loader.load('question.gltf', function (gltf) {
             model.rotation.y += rotationSpeedY;
             model.rotation.z += rotationSpeedZ;
 
-            model.position.x = Math.max(-5, Math.min(5, model.position.x));
-            model.position.z = Math.max(-5, Math.min(3, model.position.z));
-            model.position.y = Math.max(5, Math.min(0, model.position.y));
+            model.position.x = Math.max(-10, Math.min(10, model.position.x));
+            model.position.z = Math.max(-10, Math.min(10, model.position.z));
+            model.position.y = Math.max(-10, Math.min(10, model.position.y));
         }
 
         requestAnimationFrame(animateModels);
