@@ -1,0 +1,73 @@
+@font-face {
+    font-family: "Windsor";
+    src: url(Windsor\ Regular.ttf);
+  }
+
+@font-face {
+    font-family: "Helvetica";
+    src: url(Helvetica-Bold-Font.ttf);
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    overflow: auto;
+}
+#fondo3D {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: -1;
+}
+
+#totaltienda {
+    z-index: 2;
+    position: relative; /* Cambiado a relativo para que la posición sea relativa al body */
+    padding: 0%;
+    width: 70%;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    /*background-color: #9c9c9c;*/
+}
+    
+#titulo1 {
+    color: #ffffff;
+    font-family: "Windsor";
+    font-size: 100px;
+    line-height: 0.8;
+    border: 1px solid;
+    margin: 100px 0;
+    text-align: left;
+    display: flex;
+    justify-content: left;
+}
+  
+#store {
+    border: 1px solid #000000;
+    font-family: 'Helvetica', system-ui;
+    margin: 0%;
+    padding: 0%;
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.product {
+    width: 40%;
+    height: 300px;
+    margin: 40px 40px;
+    padding: 20px;
+    border: 1px solid #000000;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+button { 
+    cursor: pointer; 
+}
