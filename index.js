@@ -126,7 +126,7 @@ const models = [];
 loader.load('question.gltf', function (gltf) {
     const model = gltf.scene;
 
-    const numInstances = 10;
+    const numInstances = 50;
 
     // Crear múltiples instancias del modelo
     for (let i = 0; i < numInstances; i++) {
