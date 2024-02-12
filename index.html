@@ -3,244 +3,43 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
   <title>Entorno 3D y Tienda de Ropa</title>
-  <style>
-
-    body {
-      margin: 0;
-      padding: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
-      overflow: auto;
-    }
-    #fondo3D {
-      position: fixed;
-      top: 0;
-      left: 0;
-      z-index: -1;
-    }
-    #totaltienda {
-      z-index: 2;
-      position: relative; /* Cambiado a relativo para que la posición sea relativa al body */
-      font-family: 'Press Start 2P', system-ui;
-      margin: 5% auto; /* Alineado verticalmente y centrado horizontalmente */
-      padding: 0;
-      width: 60%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
-      background-color: #f4f4f4;
-    }
-
-    #titulo1 {
-      border: 1px solid;
-      font-size: 30px;
-      margin-bottom: 20px; /* Espacio inferior agregado para separar el título de los productos */
-    }
-
-    #store {
-      text-align: center;
-      border: 1px solid;
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center; /* Centrar los elementos en el eje principal */
-    }
-
-    .product {
-      margin: 20px;
-      padding: 20px;
-      border: 1px solid #000000;
-      border-radius: 8px;
-      background-color: #fff;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    }
-
-    button { 
-      cursor: pointer; 
-    }
-  </style>
 </head>
 <body>
   <div id="fondo3D"></div>
   <div id="totaltienda">
-    <p id="titulo1">Tienda ropa</p>
+    <p id="titulo1">Me estoy<br>cagando vivo</p>
     <div id="store">
       <div class="product">
         <h2>Camisa Elegante</h2>
         <img src="camisa.jpg" alt="Camisa Elegante">
         <p>Precio: $29.99</p>
-        <button>Agregar al Carrito</button>
+        <button type="button">Agregar al Carrito</button>
       </div>
 
       <div class="product">
         <h2>Pantalones Vaqueros</h2>
         <img src="pantalones.jpg" alt="Pantalones Vaqueros">
         <p>Precio: $39.99</p>
-        <button>Agregar al Carrito</button>
+        <button type="button">Agregar al Carrito</button>
       </div>
 
       <div class="product">
         <h2>Vestido de Noche</h2>
         <img src="vestido.jpg" alt="Vestido de Noche">
         <p>Precio: $49.99</p>
-        <button>Agregar al Carrito</button>
+        <button type="button">Agregar al Carrito</button>
       </div>
 
       <div class="product">
         <h2>Zapatos de Moda</h2>
         <img src="zapatos.jpg" alt="Zapatos de Moda">
         <p>Precio: $59.99</p>
-        <button>Agregar al Carrito</button>
+        <button type="button">Agregar al Carrito</button>
       </div>
     </div>
   </div>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-  <script>
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    const renderer = new THREE.WebGLRenderer();
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    document.getElementById('fondo3D').appendChild(renderer.domElement);
-
-    // Suelo
-    const groundGeometry = new THREE.PlaneGeometry(100, 100);
-    const groundMaterial = new THREE.MeshBasicMaterial({ color: 0xaaaaaa, side: THREE.DoubleSide });
-    const ground = new THREE.Mesh(groundGeometry, groundMaterial);
-    ground.rotation.x = Math.PI / 2;
-    scene.add(ground);
-
-    // Paredes
-    const wallGeometry = new THREE.BoxGeometry(10, 5, 0.2);
-    const wallMaterial = new THREE.MeshBasicMaterial({ color: 0x808080 });
-
-    const wall1 = new THREE.Mesh(wallGeometry, wallMaterial);
-    wall1.position.set(0, 2.5, -5);
-    scene.add(wall1);
-
-    const wall2 = new THREE.Mesh(wallGeometry, wallMaterial);
-    wall2.position.set(0, 2.5, 5);
-    scene.add(wall2);
-
-    const wall3 = new THREE.Mesh(wallGeometry, wallMaterial);
-    wall3.rotation.y = Math.PI / 2;
-    wall3.position.set(5, 2.5, 0);
-    scene.add(wall3);
-
-    const wall4 = new THREE.Mesh(wallGeometry, wallMaterial);
-    wall4.rotation.y = Math.PI / 2;
-    wall4.position.set(-5, 2.5, 0);
-    scene.add(wall4);
-
-    // Personaje
-    const geometry = new THREE.BoxGeometry();
-    const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-    const player = new THREE.Mesh(geometry, material);
-    scene.add(player);
-
-    // Cámara
-    const cameraHeight = 1.6;
-    const cameraOffsetZ = -0.5;
-    camera.position.set(0, cameraHeight, 0);
-    player.add(camera);
-
-    const moveSpeed = 0.1;
-    const rotateSpeed = 0.001;
-    const keyState = {};
-    let = isMouseMovementEnabled = false;
-
-    const center = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
-
-    const onMouseMove = (event) => {
-      if(isMouseMovementEnabled){
-        const { movementX, movementY } = event;
-        player.rotation.y -= movementX * rotateSpeed;
-        camera.rotation.x -= movementY * rotateSpeed;
-        camera.rotation.x = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, camera.rotation.x));
-      }
-    };
-
-    document.addEventListener('keydown', (event) => {
-      keyState[event.code] = true;
-    });
-
-    document.addEventListener('keyup', (event) => {
-      keyState[event.code] = false;
-    });
-
-    document.addEventListener('mousemove', onMouseMove);
-
-    document.addEventListener('keydown', (event) => {
-      if (event.code === 'Escape') {
-        document.exitPointerLock();
-        document.body.style.cursor = 'auto';
-      }
-    });
-
-    const animate = function () {
-      requestAnimationFrame(animate);
-
-      if (document.pointerLockElement === renderer.domElement) {
-        if (keyState['KeyW']) player.translateZ(-moveSpeed);
-        if (keyState['KeyS']) player.translateZ(moveSpeed);
-        if (keyState['KeyA']) player.translateX(-moveSpeed);
-        if (keyState['KeyD']) player.translateX(moveSpeed);
-      }
-      
-      renderer.render(scene, camera);
-    };
-
-    animate();
-
-    // Entrar en el modo de bloqueo del cursor al hacer clic en el botón
-    const modeToggle = document.createElement('button');
-    modeToggle.textContent = 'Modo Navegación';
-    modeToggle.style.position = 'absolute';
-    modeToggle.style.top = '10px';
-    modeToggle.style.left = '10px';
-    modeToggle.style.position = 'fixed';
-    modeToggle.addEventListener('click', toggleMode);
-    document.body.appendChild(modeToggle);
-    
-    const balls = [];
-    const ballCount = 50;
-
-    for (let i = 0; i < ballCount; i++) {
-      const radius = Math.random() * 3;
-      const geometry = new THREE.SphereGeometry(radius, 32, 32);
-      const material = new THREE.MeshBasicMaterial({ color: Math.random() * 0xffffff });
-      const ball = new THREE.Mesh(geometry, material);
-
-      ball.position.x = (Math.random() - 0.5) * 200;
-      ball.position.y = (Math.random() - 0.5) * 200;
-      ball.position.z = (Math.random() - 0.5) * 200;
-
-      balls.push(ball);
-      scene.add(ball);
-    }
-
-    function toggleMode() {
-      if (document.pointerLockElement === renderer.domElement) {
-        document.exitPointerLock();
-        document.body.style.cursor = 'auto';
-        document.getElementById('totaltienda').style.visibility = 'visible';
-        isMouseMovementEnabled = false;
-      } else {
-        renderer.domElement.requestPointerLock();
-        document.body.style.cursor = 'none';
-        document.getElementById('totaltienda').style.visibility = 'hidden';
-        isMouseMovementEnabled = true;
-      }
-    }
-
-    // Bloquear el cursor al volver al modo de pantalla completa
-    document.addEventListener('fullscreenchange', () => {
-      if (document.fullscreenElement) {
-        renderer.domElement.requestPointerLock();
-      }
-    });
-  </script>
+  <script type="module" src="index.js"></script>
 </body>
 </html>
