@@ -1,12 +1,14 @@
 @font-face {
     font-family: "Windsor";
     src: url(Windsor\ Regular.ttf);
-  }
+}
 
 @font-face {
     font-family: "Helvetica";
     src: url(Helvetica-Bold-Font.ttf);
 }
+
+/** { border: 1px solid black; }*/
 
 body {
     margin: 0;
@@ -17,6 +19,7 @@ body {
     flex-direction: column;
     overflow: auto;
 }
+
 #fondo3D {
     position: fixed;
     top: 0;
@@ -32,7 +35,6 @@ body {
     display: flex;
     justify-content: center;
     flex-direction: column;
-    /*background-color: #9c9c9c;*/
 }
     
 #titulo1 {
@@ -40,7 +42,6 @@ body {
     font-family: "Windsor";
     font-size: 100px;
     line-height: 0.8;
-    border: 1px solid;
     margin: 100px 0;
     text-align: left;
     display: flex;
@@ -48,7 +49,6 @@ body {
 }
   
 #store {
-    border: 1px solid #000000;
     font-family: 'Helvetica', system-ui;
     margin: 0%;
     padding: 0%;
