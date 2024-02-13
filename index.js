@@ -17,38 +17,23 @@ let light2 = new THREE.DirectionalLight(0xffffff, 0.5);
 light2.position.set(-5, 0, -5);
 scene.add(light2);
 
-    // Suelo
+    /* Suelo
 const groundGeometry = new THREE.PlaneGeometry(100, 100);
 const groundMaterial = new THREE.MeshBasicMaterial({ color: 0x000000, side: THREE.DoubleSide });
 const ground = new THREE.Mesh(groundGeometry, groundMaterial);
 ground.rotation.x = Math.PI / 2;
 scene.add(ground);
-
+*/
     // Paredes
-const wallGeometry = new THREE.BoxGeometry(10, 5, 0.2);
+const wallGeometry = new THREE.BoxGeometry(10, 10, 0.2);
 const wallMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 });
 
 const wall1 = new THREE.Mesh(wallGeometry, wallMaterial);
-wall1.position.set(0, 5, -10);
-wall1.scale.set(2, 2, 2);
+wall1.position.set(0, 0, -23);
+wall1.scale.set(10, 10, 10);
 scene.add(wall1);
 
-const wall2 = new THREE.Mesh(wallGeometry, wallMaterial);
-wall2.position.set(0, 5, 10);
-wall2.scale.set(2, 2, 2);
-scene.add(wall2);
 
-const wall3 = new THREE.Mesh(wallGeometry, wallMaterial);
-wall3.rotation.y = Math.PI / 2;
-wall3.position.set(10, 5, 0);
-wall3.scale.set(2, 2, 2);
-scene.add(wall3);
-
-const wall4 = new THREE.Mesh(wallGeometry, wallMaterial);
-wall4.rotation.y = Math.PI / 2;
-wall4.position.set(-10, 5, 0);
-wall4.scale.set(2, 2, 2);
-scene.add(wall4);
 
     // Personaje
 const geometry = new THREE.BoxGeometry();
@@ -58,7 +43,7 @@ player.position.set(0,0,0)
 scene.add(player);
 
     // Cámara
-const cameraHeight = 1.6;
+const cameraHeight = 0;
 const cameraOffsetZ = -0.5;
 camera.position.set(0, cameraHeight, 0);
 player.add(camera);
@@ -132,54 +117,76 @@ loader.load('question.gltf', function (gltf) {
     // Crear múltiples instancias del modelo
     for (let i = 0; i < numInstances; i++) {
         const clonedModel = model.clone();
-        const scale = Math.random() * 0.003 + 0.06;
-        const initialX = (Math.random() * 20) - 10;
-        const initialY = (Math.random() * 20) - 10;
-        const initialZ = ((Math.random() * -5)-2) ;
-
-        clonedModel.position.set(initialX, initialY, initialZ);
-        clonedModel.scale.set(scale, scale, scale);
-
-        // Generar velocidades y rotaciones aleatorias
-        const speedX = Math.random() * 0.01 - 0.005;
-        const speedY = Math.random() * 0.01 - 0.005;
-        const speedZ = Math.random() * 0.01 - 0.005;
+        const scale = Math.random() * 0.09 + 0.13;
         const rotationSpeedX = Math.random() * 0.01 - 0.005;
         const rotationSpeedY = Math.random() * 0.01 - 0.005;
         const rotationSpeedZ = Math.random() * 0.01 - 0.005;
 
+        clonedModel.rotation.x = Math.random() * 10;
+        clonedModel.rotation.y = Math.random() * 10;
+        clonedModel.rotation.z = Math.random() * 10;
+
+        clonedModel.position.set(
+            Math.random() * (15 - (-15)) + (-15), // X en el rango [-10, 10]
+            Math.random() * (7 - (-7)) + (-7),    // Y en el rango [-7, 7]
+            Math.random() * (-7 - (-10)) + (-10)  // Z en el rango [-10, -3]
+        );
+        clonedModel.scale.set(scale, scale, scale);
+
+        // Velocidad constante en dirección aleatoria
+        const speed = 0.005;
+
+        // Dirección inicial aleatoria
+        const direction = new THREE.Vector3(Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5).normalize();
+
         models.push({
             model: clonedModel,
-            speedX: speedX,
-            speedY: speedY,
-            speedZ: speedZ,
+            speed: speed,
+            direction: direction,
             rotationSpeedX: rotationSpeedX,
             rotationSpeedY: rotationSpeedY,
-            rotationSpeedZ: rotationSpeedZ,
+            rotationSpeedZ: rotationSpeedZ
         });
 
         // Agregar la instancia del modelo a la escena
         scene.add(clonedModel);
     }
 
-    // Animación: Movimiento y rotación aleatoria de los modelos
+    // Animación: Movimiento de los modelos
     function animateModels() {
         for (let i = 0; i < numInstances; i++) {
-            const { model, speedX, speedY, speedZ, rotationSpeedX, rotationSpeedY, rotationSpeedZ } = models[i];
+            const { model, speed, direction, rotationSpeedX, rotationSpeedY, rotationSpeedZ} = models[i];
 
-            // Actualizar posición
-            model.position.x += speedX;
-            model.position.y += speedY;
-            model.position.z += speedZ;
+            // Actualizar posición en la dirección actual
+            model.position.add(direction.clone().multiplyScalar(speed));
 
-            // Actualizar rotación
+            // Detectar colisiones con otros modelos
+            for (let j = 0; j < numInstances; j++) {
+                if (i !== j) {
+                    const otherModel = models[j].model;
+                    const distance = model.position.distanceTo(otherModel.position);
+
+                    if (distance < 0.2) { // Distancia de colisión
+                        // Cambiar la dirección aleatoriamente
+                        models[i].direction = new THREE.Vector3(Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5).normalize();
+                        models[j].direction = new THREE.Vector3(Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5).normalize();
+                    }
+                }
+            }
+
+            // Detectar colisiones con límites del área de movimiento
+            if (model.position.x < -15 || model.position.x > 15) {
+                direction.x *= -1; // Invertir dirección en el eje X
+            }
+            if (model.position.y < -7 || model.position.y > 7) {
+                direction.y *= -1; // Invertir dirección en el eje Y
+            }
+            if (model.position.z < -10 || model.position.z > -7) {
+                direction.z *= -1; // Invertir dirección en el eje Z
+            }
             model.rotation.x += rotationSpeedX;
             model.rotation.y += rotationSpeedY;
             model.rotation.z += rotationSpeedZ;
-
-            model.position.x = Math.max(-10, Math.min(10, model.position.x));
-            model.position.z = Math.max(-10, Math.min(10, model.position.z));
-            model.position.y = Math.max(-10, Math.min(10, model.position.y));
         }
 
         requestAnimationFrame(animateModels);
