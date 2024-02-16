@@ -8,7 +8,7 @@
     src: url(Helvetica-Bold-Font.ttf);
 }
 
-/** { border: 1px solid black; }*/
+/* { border: 1px solid white; }*/
 
 body {
     margin: 0;
@@ -27,26 +27,51 @@ body {
     z-index: -1;
 }
 
+#header{
+    position: fixed;
+    z-index: 3;
+    top: 0;
+    width: 100%;
+    height: 0%6;
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    padding: 0%;
+    margin: 0%;
+    background-color: black;
+}
+
+#c1{
+    width: 190px;
+    height: 150px;
+    transition: 0.4s;
+}
+
+#titulo1 {
+    color: #ffffff;
+    font-family: "Windsor";
+    font-size: 60px;
+    line-height: 0.8;
+    width: 100%;
+    padding: 0%;
+    margin: 0;
+    text-align: left;
+    display: flex;
+    justify-content: left;
+    transition: 0.4s;
+}
+
 #totaltienda {
     z-index: 2;
     position: relative; /* Cambiado a relativo para que la posición sea relativa al body */
     padding: 0%;
-    width: 70%;
+    margin: 10% 0 0 0;
+    width: 80%;
     display: flex;
     justify-content: center;
     flex-direction: column;
 }
-    
-#titulo1 {
-    color: #ffffff;
-    font-family: "Windsor";
-    font-size: 100px;
-    line-height: 0.8;
-    margin: 100px 0;
-    text-align: left;
-    display: flex;
-    justify-content: left;
-}
+
   
 #store {
     font-family: 'Helvetica', system-ui;
@@ -62,10 +87,14 @@ body {
     width: 40%;
     height: 300px;
     margin: 40px 40px;
+    border-radius: 1%;
     padding: 20px;
     border: 1px solid #000000;
     background-color: #fff;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    
+    transform-style: preserve-3d;
+    transition: transform 0.1s ease-out;
 }
 
 button { 
