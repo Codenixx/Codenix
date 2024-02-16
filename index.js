@@ -349,6 +349,5 @@ function scrollFunction() {
     camera2.aspect = width / height;
     camera2.updateProjectionMatrix();
 }
-
 ;
 
