@@ -1,5 +1,7 @@
 import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.121.1/build/three.module.js";
 import { GLTFLoader } from "https://cdn.jsdelivr.net/npm/three@0.121.1/examples/jsm/loaders/GLTFLoader.js";
+
+
 //https://codepen.io/jfirestorm44/pen/RwRPJda
 //https://sbcode.net/threejs/
 const scene = new THREE.Scene();
@@ -9,6 +11,15 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.setClearColor(0x9c9c9c);
 document.getElementById('fondo3D').appendChild(renderer.domElement);
 
+//segunda camara:
+const camera2 = new THREE.PerspectiveCamera(75, 190 / 150, 0.1, 1000);
+camera2.position.set(-60, 0, 5);
+camera2.lookAt(-60, 0, 0);
+
+const renderer2 = new THREE.WebGLRenderer({ canvas: document.getElementById('c1') });
+renderer2.setSize(190, 150);
+
+//luces:
 let light = new THREE.DirectionalLight(0xffffff, 1.0); // soft white light
 light.position.set(0, 0, 8);
 scene.add(light);
@@ -29,11 +40,9 @@ const wallGeometry = new THREE.BoxGeometry(10, 10, 0.2);
 const wallMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 });
 
 const wall1 = new THREE.Mesh(wallGeometry, wallMaterial);
-wall1.position.set(0, 0, -23);
-wall1.scale.set(10, 10, 10);
+wall1.position.set(0, 0, -25);
+wall1.scale.set(20, 10, 10);
 scene.add(wall1);
-
-
 
     // Personaje
 const geometry = new THREE.BoxGeometry();
@@ -52,8 +61,11 @@ const moveSpeed = 0.1;
 const rotateSpeed = 0.001;
 const keyState = {};
 let isMouseMovementEnabled = false;
+let lolitoelmejor = true;
 
-const center = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+const mouse = new THREE.Vector2();
+const target = new THREE.Vector2();
+const windowHalf = new THREE.Vector2( window.innerWidth / 2, window.innerHeight / 2 );
 
 const onMouseMove = (event) => {
     if(isMouseMovementEnabled){
@@ -62,7 +74,19 @@ const onMouseMove = (event) => {
         camera.rotation.x -= movementY * rotateSpeed;
         camera.rotation.x = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, camera.rotation.x));
     }
+    if(lolitoelmejor){
+        mouse.x = ( event.clientX - windowHalf.x );
+        mouse.y = ( event.clientY - windowHalf.x );
+    }
+
 };
+
+function smoothScroll(){
+    target = window.scrollY;
+    current = lerp(current, target, ease);
+    scrollable.style.transform = `translate3d(0,${-current}px, 0)`;
+}
+
 
 document.addEventListener('keydown', (event) => {
     keyState[event.code] = true;
@@ -72,7 +96,18 @@ document.addEventListener('keyup', (event) => {
     keyState[event.code] = false;
 });
 
-document.addEventListener('mousemove', onMouseMove);
+document.addEventListener('mousemove', onMouseMove, false);
+
+window.addEventListener( 'resize', onResize, false );
+
+const div3D = document.querySelectorAll('product');
+
+document.addEventListener('mousemove', (event) => {
+    const xRotation = (event.clientY / window.innerHeight - 0.5) * 30;
+    const yRotation = (event.clientX / window.innerWidth - 0.5) * 30;
+
+    div3D.style.transform = `translate(-50%, -50%) rotateX(${xRotation}deg) rotateY(${yRotation}deg)`;
+});
 
 document.addEventListener('keydown', (event) => {
     if (event.code === 'Escape') {
@@ -80,6 +115,31 @@ document.addEventListener('keydown', (event) => {
         document.body.style.cursor = 'auto';
     }
 });
+
+function animateMouse() {
+    if(lolitoelmejor){
+    target.x = ( 1 - mouse.x ) * 0.00009;
+    target.y = ( 1 - mouse.y ) * 0.00009;
+
+    camera.rotation.x += 0.05 * ( target.y - camera.rotation.x );
+    camera.rotation.y += 0.05 * ( target.x - camera.rotation.y );
+
+    requestAnimationFrame(animateMouse);
+    }
+}
+animateMouse();
+
+
+function onResize( event ) {
+	const width = window.innerWidth;
+	const height = window.innerHeight;
+
+    windowHalf.set( width / 2, height / 2 );
+
+    camera.aspect = width / height;
+	camera.updateProjectionMatrix();
+	renderer.setSize( width, height );
+}
 
 const animate = function () {
 requestAnimationFrame(animate);
@@ -99,8 +159,8 @@ animate();
 const modeToggle = document.createElement('button');
 modeToggle.textContent = 'Modo Navegación';
 modeToggle.style.position = 'absolute';
-modeToggle.style.top = '10px';
-modeToggle.style.left = '10px';
+modeToggle.style.top = '96%';
+modeToggle.style.left = '1%';
 modeToggle.style.position = 'fixed';
 modeToggle.addEventListener('click', toggleMode);
 document.body.appendChild(modeToggle);
@@ -112,12 +172,12 @@ const models = [];
 loader.load('question.gltf', function (gltf) {
     const model = gltf.scene;
 
-    const numInstances = 100;
+    const numInstances = 150;
 
     // Crear múltiples instancias del modelo
     for (let i = 0; i < numInstances; i++) {
         const clonedModel = model.clone();
-        const scale = Math.random() * 0.09 + 0.13;
+        const scale = Math.random() * 0.06 + 0.09;
         const rotationSpeedX = Math.random() * 0.01 - 0.005;
         const rotationSpeedY = Math.random() * 0.01 - 0.005;
         const rotationSpeedZ = Math.random() * 0.01 - 0.005;
@@ -125,6 +185,7 @@ loader.load('question.gltf', function (gltf) {
         clonedModel.rotation.x = Math.random() * 10;
         clonedModel.rotation.y = Math.random() * 10;
         clonedModel.rotation.z = Math.random() * 10;
+
 
         clonedModel.position.set(
             Math.random() * (15 - (-15)) + (-15), // X en el rango [-10, 10]
@@ -199,6 +260,22 @@ function (error) {
     console.error('Error al cargar el modelo:', error);
 });
 
+let model1, model2;
+
+const loader2 = new GLTFLoader();
+loader2.load('question.gltf', function (gltf) {
+    model1 = gltf.scene;
+    scene.add(model1);
+    model1.position.set(-60, 0, -17);
+});
+
+const loader3 = new GLTFLoader();
+loader3.load('circuloquestion.gltf', function (gltf) {
+    model2 = gltf.scene;
+    scene.add(model2);
+    model2.position.set(-60, 0, -17);
+});
+
 
 function toggleMode() {
     if (document.pointerLockElement === renderer.domElement) {
@@ -206,11 +283,14 @@ function toggleMode() {
         document.body.style.cursor = 'auto';
         document.getElementById('totaltienda').style.visibility = 'visible';
         isMouseMovementEnabled = false;
+        lolitoelmejor = true;
+        animateMouse();
     } else {
         renderer.domElement.requestPointerLock();
         document.body.style.cursor = 'none';
         document.getElementById('totaltienda').style.visibility = 'hidden';
         isMouseMovementEnabled = true;
+        lolitoelmejor = false;
     }
 }
 
@@ -219,5 +299,56 @@ document.addEventListener('fullscreenchange', () => {
     if (document.fullscreenElement) {
         renderer.domElement.requestPointerLock();
     }
-});
+})
+window.onscroll = function() {scrollFunction()};
+
+
+
+function animate2() {
+    requestAnimationFrame(animate2);
+    renderer2.render(scene, camera2);
+}
+animate2();
+
+function animate3() {
+    requestAnimationFrame(animate3);
+
+    // Rotación de los modelos en sentido horario sobre el eje Z
+    if (model1) {
+        model1.rotation.y += 0.01; // Velocidad de rotación para el primer modelo
+    }
+
+    // Rotación de los modelos en sentido antihorario sobre el eje Z
+    if (model2) {
+        model2.rotation.y -= 0.01; // Velocidad de rotación para el segundo modelo
+    }
+
+    renderer.render(scene, camera);
+}
+
+// Llamar a la función animate para comenzar la animación
+animate3();
+
+function scrollFunction() {
+    const scaleDownFactor = 0.5; // Factor de escala para reducir el tamaño
+    if (document.body.scrollTop > 50 || document.documentElement.scrollTop > 50) {
+        document.getElementById("titulo1").style.fontSize = "30px";
+        const originalWidth = 190;
+        const originalHeight = 150;
+        const scaledWidth = originalWidth * scaleDownFactor;
+        const scaledHeight = originalHeight * scaleDownFactor;
+        document.getElementById("c1").style.height = scaledHeight + "px";
+        document.getElementById("c1").style.width = scaledWidth + "px";
+    } else {
+        document.getElementById("titulo1").style.fontSize = "60px";
+        document.getElementById("c1").style.height = "150px";
+        document.getElementById("c1").style.width = "190px";
+    }
+    const width = document.getElementById("c1").clientWidth;
+    const height = document.getElementById("c1").clientHeight;
+    camera2.aspect = width / height;
+    camera2.updateProjectionMatrix();
+}
+
+;
 
