@@ -4,20 +4,49 @@ import { GLTFLoader } from "https://cdn.jsdelivr.net/npm/three@0.121.1/examples/
 
 //https://codepen.io/jfirestorm44/pen/RwRPJda
 //https://sbcode.net/threejs/
+//https://codesandbox.io/p/sandbox/scrollcontrols-and-plot-elbhzy?file=%2Fsrc%2FApp.js%3A27%2C37
+//https://codesandbox.io/p/sandbox/moksha-f1ixt?file=%2Fsrc%2Findex.js
+
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-const renderer = new THREE.WebGLRenderer();
+const renderer = new THREE.WebGLRenderer({ alpha: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
-renderer.setClearColor(0x9c9c9c);
 document.getElementById('fondo3D').appendChild(renderer.domElement);
 
-//segunda camara:
-const camera2 = new THREE.PerspectiveCamera(75, 190 / 150, 0.1, 1000);
-camera2.position.set(-60, 0, 5);
-camera2.lookAt(-60, 0, 0);
+//logo camara:
+const camaraLogo = new THREE.PerspectiveCamera(75, 190 / 150, 0.1, 1000);
+camaraLogo.position.set(-60, 0, 3);
+camaraLogo.lookAt(-60, 0, 0);
 
-const renderer2 = new THREE.WebGLRenderer({ canvas: document.getElementById('c1') });
+const renderer2 = new THREE.WebGLRenderer({ canvas: document.getElementById('logo') });
 renderer2.setSize(190, 150);
+
+//camara cami1:
+const camara1 = new THREE.PerspectiveCamera(75, 600 / 400, 0.1, 1000);
+camara1.position.set(200, 0, 3);
+camara1.lookAt(200, 0, 0);
+
+const renderer3 = new THREE.WebGLRenderer({ canvas: document.getElementById('c1'), alpha: true });
+renderer3.setSize(600, 400);
+renderer3.setClearColor(0x000000, 0);
+
+//camara cami2:
+const camara2 = new THREE.PerspectiveCamera(75, 600 / 400, 0.1, 1000);
+camara2.position.set(200, -4, 3);
+camara2.lookAt(200, -4, 0);
+
+const renderer4 = new THREE.WebGLRenderer({ canvas: document.getElementById('c2'), alpha: true });
+renderer4.setSize(600, 400);
+renderer4.setClearColor(0x000000, 0);
+
+//camara cami3:
+const camara3 = new THREE.PerspectiveCamera(75, 600 / 400, 0.1, 1000);
+camara3.position.set(200, -8, 3);
+camara3.lookAt(200, -8, 0);
+
+const renderer5 = new THREE.WebGLRenderer({ canvas: document.getElementById('c3'), alpha: true });
+renderer5.setSize(600, 400);
+renderer5.setClearColor(0x000000, 0);
 
 //luces:
 let light = new THREE.DirectionalLight(0xffffff, 1.0); // soft white light
@@ -28,6 +57,11 @@ let light2 = new THREE.DirectionalLight(0xffffff, 0.5);
 light2.position.set(-5, 0, -5);
 scene.add(light2);
 
+let light3 = new THREE.SpotLight(0xffffff, 0.01);
+light3.position.set(199, 0, 4);
+scene.add(light3);
+
+
     /* Suelo
 const groundGeometry = new THREE.PlaneGeometry(100, 100);
 const groundMaterial = new THREE.MeshBasicMaterial({ color: 0x000000, side: THREE.DoubleSide });
@@ -37,11 +71,11 @@ scene.add(ground);
 */
     // Paredes
 const wallGeometry = new THREE.BoxGeometry(10, 10, 0.2);
-const wallMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 });
+const wallMaterial = new THREE.MeshBasicMaterial({ color: 0x000000});
 
 const wall1 = new THREE.Mesh(wallGeometry, wallMaterial);
 wall1.position.set(0, 0, -25);
-wall1.scale.set(20, 10, 10);
+wall1.scale.set(30, 10, 10);
 scene.add(wall1);
 
     // Personaje
@@ -57,7 +91,7 @@ const cameraOffsetZ = -0.5;
 camera.position.set(0, cameraHeight, 0);
 player.add(camera);
 
-const moveSpeed = 0.1;
+const moveSpeed = 0.9;
 const rotateSpeed = 0.001;
 const keyState = {};
 let isMouseMovementEnabled = false;
@@ -276,6 +310,138 @@ loader3.load('circuloquestion.gltf', function (gltf) {
     model2.position.set(-60, 0, -17);
 });
 
+let model3;
+let originalPosition;
+let originalRotation;
+let hovered = false;
+
+const cami1 = new GLTFLoader();
+cami1.load(
+    'Tshirt2.gltf',
+    function (gltf) {
+        model3 = gltf.scene;
+        scene.add(model3);
+        light3.target = model3;
+
+        model3.position.set(200, -1.3, 2);
+        model3.scale.set(1, 1, 1);
+
+        function animate() {
+            requestAnimationFrame(animate);
+
+            if (!hovered) {
+                model3.rotation.y += 0.01;
+            }
+
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        document.getElementById('c1').addEventListener('mouseenter', () => {
+            originalPosition = model3.position.clone();
+            originalRotation = model3.rotation.clone();
+
+            // Animación de giro rápido hacia el frente
+            const targetRotation = new THREE.Euler(0, Math.PI*2, 0);
+            const speed = 0.5; // Velocidad de giro rápida
+            const rotateToFront = () => {
+                model3.rotation.y -= speed; // Rotación hacia el frente con velocidad rápida
+                if (model3.rotation.y > targetRotation.y) {
+                    requestAnimationFrame(rotateToFront);
+                } else {
+                    hovered = true;
+                    // Animación de desplazamiento hacia adelante
+                    const targetPosition = new THREE.Vector3(200, -1.3, 2.2);
+                    const speed = 0.1;
+                    const moveForward = () => {
+                        const direction = targetPosition.clone().sub(model3.position).normalize();
+                        model3.position.add(direction.multiplyScalar(speed));
+                        if (model3.position.distanceTo(targetPosition) > 0.01) {
+                            requestAnimationFrame(moveForward);
+                        } else {
+                            document.addEventListener('mousemove', onMouseMove);
+                        }
+                    };
+                    moveForward();
+                }
+            };
+            rotateToFront();
+        });
+
+        document.getElementById('c1').addEventListener('mouseleave', () => {
+            if (originalPosition && originalRotation && hovered) {
+                // Restaurar posición y rotación originales
+                model3.position.copy(originalPosition);
+                model3.rotation.copy(originalRotation);
+                hovered = false;
+                document.removeEventListener('mousemove', onMouseMove);
+            }
+        });
+
+        function onMouseMove(event) {
+            const { movementX } = event;
+            model3.rotation.y -= movementX * 0.001; // Rotación ligera con el movimiento del ratón
+        }
+    },
+    undefined,
+    function (error) {
+        console.error('Error al cargar el modelo GLTF', error);
+    }
+);
+
+
+
+const cami2 = new GLTFLoader();
+cami2.load(
+    'Tshirt2.gltf',
+    function (gltf) {
+        const model3 = gltf.scene;
+        scene.add(model3);
+       // light4.target = model3;
+
+        model3.position.set(200, -5.3, 2);
+        model3.scale.set(1, 1, 1);
+
+        function animate() {
+            requestAnimationFrame(animate);
+
+            model3.rotation.y += 0.01;
+
+            renderer.render(scene, camera);
+        }
+        animate();
+    },
+    undefined,
+    function (error) {
+        console.error('Error al cargar el modelo GLTF', error);
+    }
+);
+
+const cami3 = new GLTFLoader();
+cami3.load(
+    'Tshirt2.gltf',
+    function (gltf) {
+        const model4 = gltf.scene;
+        scene.add(model4);
+      //  light5.target = model4;
+
+        model4.position.set(200, -9.3, 2);
+        model4.scale.set(1, 1, 1);
+
+        function animate() {
+            requestAnimationFrame(animate);
+
+            model4.rotation.y += 0.01;
+
+            renderer.render(scene, camera);
+        }
+        animate();
+    },
+    undefined,
+    function (error) {
+        console.error('Error al cargar el modelo GLTF', error);
+    }
+);
 
 function toggleMode() {
     if (document.pointerLockElement === renderer.domElement) {
@@ -306,7 +472,10 @@ window.onscroll = function() {scrollFunction()};
 
 function animate2() {
     requestAnimationFrame(animate2);
-    renderer2.render(scene, camera2);
+    renderer2.render(scene, camaraLogo);
+    renderer3.render(scene, camara1);
+    renderer4.render(scene, camara2);
+    renderer5.render(scene, camara3);
 }
 animate2();
 
@@ -332,22 +501,23 @@ animate3();
 function scrollFunction() {
     const scaleDownFactor = 0.5; // Factor de escala para reducir el tamaño
     if (document.body.scrollTop > 50 || document.documentElement.scrollTop > 50) {
-        document.getElementById("titulo1").style.fontSize = "30px";
+        document.getElementById("titulo1").style.fontSize = "40px";
         const originalWidth = 190;
         const originalHeight = 150;
         const scaledWidth = originalWidth * scaleDownFactor;
         const scaledHeight = originalHeight * scaleDownFactor;
-        document.getElementById("c1").style.height = scaledHeight + "px";
-        document.getElementById("c1").style.width = scaledWidth + "px";
+        document.getElementById("logo").style.height = scaledHeight + "px";
+        document.getElementById("logo").style.width = scaledWidth + "px";
     } else {
         document.getElementById("titulo1").style.fontSize = "60px";
-        document.getElementById("c1").style.height = "150px";
-        document.getElementById("c1").style.width = "190px";
+        document.getElementById("logo").style.height = "150px";
+        document.getElementById("logo").style.width = "190px";
     }
-    const width = document.getElementById("c1").clientWidth;
-    const height = document.getElementById("c1").clientHeight;
-    camera2.aspect = width / height;
-    camera2.updateProjectionMatrix();
+    const width = document.getElementById("logo").clientWidth;
+    const height = document.getElementById("logo").clientHeight;
+    camaraLogo.aspect = width / height;
+    camaraLogo.updateProjectionMatrix();
 }
-;
 
+
+;
