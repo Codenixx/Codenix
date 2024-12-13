@@ -1,27 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="style.css">
-  <title>Entorno 3D y Tienda de Ropa</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        @font-face {
+        font-family: "Helvetica";
+        src: url(Helvetica-Bold-Font.ttf);
+}
+        body{
+            font-family: 'Helvetica', system-ui;
+            background-image: url(abstract-luxury-gradient-blue-background-smooth-dark-blue-with-black-vignette-studio-banner.jpg);
+            background-repeat:no-repeat;
+            height: auto;
+        }
+        div{
+            
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 12em;
+            flex-direction: column;
+        }
+        h1.hola{
+            color: #f4f4f4;
+            font-size: 50px;
+        }
+        h1{
+            color: #f4f4f4;
+            font-size: 100px;
+        }
+    </style>
 </head>
 <body>
-  <div id="fondo3D"></div>
-  <div id="header">
-    <canvas id="logo" class="c"></canvas>
-    <p id="titulo1">Unknown Things</p>
-  </div>
-  <div id="totaltienda">
-    <div id="store">
-      <canvas id="c1" class="product"></canvas>
-      <canvas id="c2" class="product"></canvas>
-      <canvas id="c3" class="product"></canvas>
-      <canvas id="c4" class="product"></canvas>
-      <canvas id="c5" class="product"></canvas>
-      <canvas id="c6" class="product"></canvas>
+    <div>
+        <h1 class="hola">Madrid</h1>
+        <h1>-3°</h1>
     </div>
-  </div>
-  <script type="module" src="index.js"></script>
 </body>
 </html>
